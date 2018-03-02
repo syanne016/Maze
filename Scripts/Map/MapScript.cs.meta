@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 8ed54351d042b714aa7916d84ac39ca5
+timeCreated: 1516016770
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - cam: {instanceID: 0}
+  - cam2: {instanceID: 0}
+  - move: {instanceID: 0}
+  - state: {instanceID: 0}
+  - name: {instanceID: 0}
+  - mouseOverFloor: {fileID: 2100000, guid: 724e416996a16c14898e0f7f3747e5ee, type: 2}
+  - origMaterialFloor: {fileID: 2100000, guid: 11f6155b54212304c86877dae23a4099, type: 2}
+  - mouseOverWall: {fileID: 2100000, guid: 0a17efeba91b3a442b6bcfb628941dc2, type: 2}
+  - origMaterialWall: {fileID: 2100000, guid: 3a432c7c4003beb4c85f4115a55d49ea, type: 2}
+  - render1: {instanceID: 0}
+  - render2: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
