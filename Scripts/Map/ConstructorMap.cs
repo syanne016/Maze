@@ -72,35 +72,6 @@ public class ConstructorMap : MonoBehaviour {
 					rot = 0;
 				}
 			}
-
-
-			/*var distance = Vector3.Distance (cam2.transform.position, dis.transform.position);
-
-			if (Input.GetAxis ("Mouse ScrollWheel") > 0 && rolling == false && distance >= 60) {
-				rolling = true;
-				minimize = true;
-				Debug.Log (distance);
-			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0 && rolling == false && distance <= 80) {
-				rolling = true;
-				maximize = true;
-				Debug.Log (distance);
-			}
-
-			if (minimize == true && rolling == true) {			
-				if (distance <= 60) {
-					minimize = false;
-					rolling = false;
-				} else if (distance > 60) {				
-					cam2.transform.localPosition += camDir;
-				}
-			} else if (maximize == true && rolling == true) {			
-				if (distance >= 80) {
-					maximize = false;
-					rolling = false;
-				} else if (distance < 80) {
-					cam2.transform.localPosition -= camDir;
-				}
-			}*/
 		}
 	}
 }

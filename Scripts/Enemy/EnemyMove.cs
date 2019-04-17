@@ -17,7 +17,7 @@ public class EnemyMove : MonoBehaviour {
 	[SerializeField]private float timeMov;
 	[SerializeField]private bool rotating;
 	[SerializeField]private string move;
-	[SerializeField] string[] go= { "Forward", "Right", "Left", "Back" };
+	[SerializeField]string[] go= { "Forward", "Right", "Left", "Back" };
 
 
 
@@ -82,11 +82,11 @@ public class EnemyMove : MonoBehaviour {
 		}
 		if (lifes <= 0) {
 			enemyController.SetBool ("Die", true);
+			rotating = false;
 			state = State.DIE;
 		}
 
 	}
-
 	/*
 	 * Roam calculates a new direction to go for the enemy
 	 * and also checks if the main character is near.
@@ -96,7 +96,7 @@ public class EnemyMove : MonoBehaviour {
 		//To move forward
 		if (move.Equals ("Forward")) {
 			//If there is an object in front of us we choose another direction to go to
-			if (Physics.Raycast (this.transform.position+Vector3.up*0.5f, this.transform.forward, out hit, 1.2f, layer,QueryTriggerInteraction.Ignore)) {
+			if (Physics.Raycast (this.transform.position+Vector3.up*0.5f, this.transform.forward, out hit, 1.5f, layer,QueryTriggerInteraction.Ignore)) {
 				time = 0;
 				move = RandomItem (go);
 				rotating = true;
@@ -113,6 +113,13 @@ public class EnemyMove : MonoBehaviour {
 					enemyController.SetBool ("Turn", true);
 					rotating = true;
 				}
+				else if (Physics.Raycast (this.transform.position+Vector3.up*0.5f, this.transform.forward, out hit, 1.5f, layer,QueryTriggerInteraction.Ignore)) {
+					time = 0;
+					move = RandomItem (go);
+					enemyController.SetBool ("Turn", true);
+					rotating = true;
+				}
+
 			}
 		}
 		//To move right
@@ -128,7 +135,7 @@ public class EnemyMove : MonoBehaviour {
 				}
 			}
 			//If there is an object in front of us we choose another direction to go to
-			else if (Physics.Raycast (this.transform.position+Vector3.up*0.5f, this.transform.forward, out hit, 1.2f, layer,QueryTriggerInteraction.Ignore)) {
+			else if (Physics.Raycast (this.transform.position+Vector3.up*0.5f, this.transform.forward, out hit, 1.5f, layer,QueryTriggerInteraction.Ignore)) {
 				time = 0;
 				move = RandomItem (go);
 				enemyController.SetBool ("Turn", true);
@@ -139,6 +146,12 @@ public class EnemyMove : MonoBehaviour {
 				this.transform.position += this.transform.forward * Time.deltaTime * acc;
 				time += Time.deltaTime;
 				if (time >= timeMov) {
+					time = 0;
+					move = RandomItem (go);
+					enemyController.SetBool ("Turn", true);
+					rotating = true;
+				}
+				else if (Physics.Raycast (this.transform.position+Vector3.up*0.5f, this.transform.forward, out hit, 1.5f, layer,QueryTriggerInteraction.Ignore)) {
 					time = 0;
 					move = RandomItem (go);
 					enemyController.SetBool ("Turn", true);
@@ -160,7 +173,7 @@ public class EnemyMove : MonoBehaviour {
 				}
 			}
 			//If there is an object in front of us we choose another direction to go to
-			else if (Physics.Raycast (this.transform.position+Vector3.up*0.5f, this.transform.forward, out hit, 1.2f, layer,QueryTriggerInteraction.Ignore)) {
+			else if (Physics.Raycast (this.transform.position+Vector3.up*0.5f, this.transform.forward, out hit, 1.5f, layer,QueryTriggerInteraction.Ignore)) {
 				time = 0;
 				move = RandomItem (go);
 				enemyController.SetBool ("Turn", true);
@@ -171,6 +184,12 @@ public class EnemyMove : MonoBehaviour {
 				this.transform.position += this.transform.forward * Time.deltaTime * acc;
 				time += Time.deltaTime;
 				if (time >= timeMov) {
+					time = 0;
+					move = RandomItem (go);
+					enemyController.SetBool ("Turn", true);
+					rotating = true;
+				}
+				else if (Physics.Raycast (this.transform.position+Vector3.up*0.5f, this.transform.forward, out hit, 1.5f, layer,QueryTriggerInteraction.Ignore)) {
 					time = 0;
 					move = RandomItem (go);
 					enemyController.SetBool ("Turn", true);
@@ -191,17 +210,24 @@ public class EnemyMove : MonoBehaviour {
 				}
 			}
 			//If there is an object in front of us we choose another direction to go to
-			else if (Physics.Raycast (this.transform.position+Vector3.up, this.transform.forward, out hit, 1.2f, layer,QueryTriggerInteraction.Ignore)) {
+			else if (Physics.Raycast (this.transform.position+Vector3.up*0.5f, this.transform.forward, out hit, 1.5f, layer,QueryTriggerInteraction.Ignore)) {
 				time = 0;
 				move = RandomItem (go);
 				enemyController.SetBool ("Turn", true);
 				rotating = true;
+				Debug.Log (hit.rigidbody.gameObject.name);
 			}
 			//If there isn't a thing in fornt of us we move for 1s
 			else if (rotating == false) {
 				this.transform.position += this.transform.forward * Time.deltaTime * acc;
 				time += Time.deltaTime;
 				if (time >= timeMov) {
+					time = 0;
+					move = RandomItem (go);
+					enemyController.SetBool ("Turn", true);
+					rotating = true;
+				}
+				else if (Physics.Raycast (this.transform.position+Vector3.up*0.5f, this.transform.forward, out hit, 1.5f, layer,QueryTriggerInteraction.Ignore)) {
 					time = 0;
 					move = RandomItem (go);
 					enemyController.SetBool ("Turn", true);
@@ -218,6 +244,7 @@ public class EnemyMove : MonoBehaviour {
 		} 
 
 	}	
+	//When the character is detected. it chases it
 	void Chase(){
 		enemyController.SetBool ("Chase", true);
 		distance = (this.transform.position - pj.transform.position).magnitude;
@@ -231,6 +258,7 @@ public class EnemyMove : MonoBehaviour {
 			this.transform.position += this.transform.forward * Time.deltaTime * chaseAcc;
 		}
 	}
+	//When the character is near, it attacks
 	void Attack(){
 		if (attack.attack == true) {
 			enemyController.SetBool ("Chase", false);
@@ -248,14 +276,14 @@ public class EnemyMove : MonoBehaviour {
 
 	IEnumerator Wait(){
 		enemyController.SetBool ("Attack", true);
-		yield return new WaitForSeconds(1.5f);
+		yield return new WaitForSeconds(1f);
 		attack.attack = false;
 		enemyController.SetBool ("Attack", false);
 		state = State.STOP;
 	}
 
 	IEnumerator Stop(){
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(0.5f);
 		enemyController.SetBool ("Chase", true);
 		state = State.CHASE;
 	}

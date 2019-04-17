@@ -23,7 +23,7 @@ public class succAttack : MonoBehaviour {
 	}
 	IEnumerator Wait(){
 		enemyController.SetBool ("Hit", true);
-		yield return new WaitForSeconds(1.3f);
+		yield return new WaitForSeconds(0.8f);
 		enemyController.SetBool ("Hit", false);
 		lifesEnemy.lifes--;
 	}
