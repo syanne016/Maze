@@ -54,7 +54,8 @@ public class Movement : MonoBehaviour {
 	public enum State{
 		MOVE,
 		ATTACK,
-		STOP
+		STOP,
+		SUCCATTACK
 	}
 	[SerializeField]public State st = State.MOVE;
 	public bool attack;
@@ -125,7 +126,6 @@ public class Movement : MonoBehaviour {
 				canvasController.SetBool ("Asset3D", true);
 				nearMap = true;
 			}
-			Debug.Log (other.gameObject.transform.parent.parent.parent.name);
 
 
 		} /*else if(other.gameObject.tag.Equals("MAP")) {
@@ -217,47 +217,40 @@ public class Movement : MonoBehaviour {
     void Update () {
 		//Check if the map that is active is the first one
 		if (state.active.Equals ("MAP1")) {
-			//Cursor.lockState = CursorLockMode.Locked;
-			cam.enabled = true;
-			cam2.enabled = false;
-
-			Cursor.lockState = CursorLockMode.None;
-
-			//Check if the object you are near is the one that access the map
-			if (Input.GetMouseButtonDown (1) && nearMap == true) {
-				StartCoroutine (Wait ());
-			}
-
-			rotationY += Input.GetAxis ("Mouse X");
-			rotationX += Input.GetAxis ("Mouse Y");
-
-			//Rotation capped
-			rotationX = Mathf.Clamp (rotationX, minimumX, maximumX);
-
-			//Rotation of the camara and the character
-			cam.transform.localEulerAngles = new Vector3 (-rotationX, 0, 0);
-			this.transform.localEulerAngles = new Vector3 (0, rotationY*2f, 0);
-
-			if (lifes == 2) {
-				lifesController.SetInteger ("lifes", lifes);
-				lives.transform.GetChild (2).transform.GetChild (0).GetComponent<Image> ().enabled = false;
-			} else if (lifes == 1) {
-				lifesController.SetInteger ("lifes", lifes);
-				lives.transform.GetChild (1).transform.GetChild (0).GetComponent<Image> ().enabled = false;
-			}else if (lifes == 0) {
-				lifesController.SetInteger ("lifes", lifes);
-				lives.transform.GetChild (0).transform.GetChild (0).GetComponent<Image> ().enabled = false;
-				canvasController.SetTrigger ("Fade");
-				SceneManager.LoadScene( "GameOver", LoadSceneMode.Single );
-			}
-
-		} 
-    }
-
-    void FixedUpdate(){
-		//Check if the map that is active is the first one
-		if (state.active.Equals ("MAP1")) {
 			if (st == State.MOVE) {
+				//Cursor.lockState = CursorLockMode.Locked;
+				cam.enabled = true;
+				cam2.enabled = false;
+
+				Cursor.lockState = CursorLockMode.None;
+
+				//Check if the object you are near is the one that access the map
+				if (Input.GetMouseButtonDown (1) && nearMap == true) {
+					StartCoroutine (Wait ());
+				}
+
+				rotationY += Input.GetAxis ("Mouse X");
+				rotationX += Input.GetAxis ("Mouse Y");
+
+				//Rotation capped
+				rotationX = Mathf.Clamp (rotationX, minimumX, maximumX);
+
+				//Rotation of the camara and the character
+				cam.transform.localEulerAngles = new Vector3 (-rotationX, 0, 0);
+				this.transform.localEulerAngles = new Vector3 (0, rotationY*2f, 0);
+
+				if (lifes == 2) {
+					lifesController.SetInteger ("lifes", lifes);
+					lives.transform.GetChild (2).transform.GetChild (0).GetComponent<Image> ().enabled = false;
+				} else if (lifes == 1) {
+					lifesController.SetInteger ("lifes", lifes);
+					lives.transform.GetChild (1).transform.GetChild (0).GetComponent<Image> ().enabled = false;
+				}else if (lifes == 0) {
+					lifesController.SetInteger ("lifes", lifes);
+					lives.transform.GetChild (0).transform.GetChild (0).GetComponent<Image> ().enabled = false;
+					canvasController.SetTrigger ("Fade");
+					SceneManager.LoadScene( "GameOver", LoadSceneMode.Single );
+				}
 				Move ();
 			} else if (st == State.ATTACK) {
 				Attack ();
@@ -278,15 +271,13 @@ public class Movement : MonoBehaviour {
 					SceneManager.LoadScene("PJEI_Examen", LoadSceneMode.Single);
 				}
 			}
-
-		}
-
-
+		} 
     }
+
 	void Move(){
 		//FORWARD
 		if (Input.GetKey (KeyCode.W) && !trap) {
-			pj.velocity += transform.forward * Time.deltaTime * accX;
+			pj.velocity += this.transform.forward * Time.deltaTime * accX;
 			if (inv == Inventory.NOTHING || inv == Inventory.SPECIAL) {
 				dudeController.SetBool ("Move", true);
 			} else {
@@ -295,7 +286,7 @@ public class Movement : MonoBehaviour {
 		}	
 		//BACKWARD
 		if (Input.GetKey (KeyCode.S) && !trap) {
-			pj.velocity -= transform.forward * Time.deltaTime * accX;
+			pj.velocity -= this.transform.forward * Time.deltaTime * accX;
 			if (inv == Inventory.NOTHING || inv == Inventory.SPECIAL) {
 				dudeController.SetBool ("Move", true);
 			} else {
@@ -304,7 +295,7 @@ public class Movement : MonoBehaviour {
 		}
 		//RIGHT
 		if (Input.GetKey (KeyCode.D) && !trap) {
-			pj.velocity += transform.right * Time.deltaTime * accX;
+			pj.velocity += this.transform.right * Time.deltaTime * accX;
 			if (inv == Inventory.NOTHING || inv == Inventory.SPECIAL) {
 				dudeController.SetBool ("Move", true);
 			} else {
@@ -313,20 +304,14 @@ public class Movement : MonoBehaviour {
 		}
 		//LEFT
 		if (Input.GetKey (KeyCode.A) && !trap) {
-			pj.velocity -= transform.right * Time.deltaTime * accX;
+			pj.velocity -= this.transform.right * Time.deltaTime * accX;
 			if (inv == Inventory.NOTHING || inv == Inventory.SPECIAL) {
 				dudeController.SetBool ("Move", true);
 			} else {
 				dudeController.SetBool ("MoveObj", true);
 			}
 		}
-		//Jump
-		/*if (Physics.Raycast (transform.position + Vector3.up*0.5f, new Vector3 (0, -1, 0), out hit, 0.55f)) {
-			grounded = true;
-		} else {
-			grounded = false;
-		}*/
-
+	
 		if (Input.GetKeyDown(KeyCode.Space) && grounded == true && !trap) {
 			dudeController.SetBool ("Jump", true);
 			jumping = true;
@@ -338,9 +323,9 @@ public class Movement : MonoBehaviour {
 		if (pj.velocity.y < 0) {
 			dudeController.SetBool ("Falling", true);
 		} 
-		if (grounded) {
+		/*if (grounded) {
 			pj.velocity = new Vector3 (pj.velocity.x, 0, pj.velocity.z);
-		}
+		}*/
 		if(trap && grounded == true){		
 			if (inv == Inventory.NOTHING || inv == Inventory.SPECIAL) {
 			}
@@ -351,14 +336,14 @@ public class Movement : MonoBehaviour {
 		}
 			
 
-		//Fricción (para parar)
+		//Friction (to stop)
 		pj.velocity = Vector3.ProjectOnPlane (pj.velocity, Vector3.up) * (1 - friction * Time.deltaTime) + Vector3.Project (pj.velocity, Vector3.up);
-		//Velocidad máxima
+		//Max Speed
 		maxZ = maxSpeedZPositive;
 		if (Vector3.Angle (Vector3.Project (pj.velocity, transform.forward), transform.forward) > 90) {
 			maxZ = maxSpeedZNegative;
 		}
-			pj.velocity = Vector3.ClampMagnitude (Vector3.Project (pj.velocity, transform.forward), maxZ) + Vector3.ClampMagnitude (Vector3.Project (pj.velocity, transform.right), maxSpeedX) + Vector3.Project (pj.velocity, transform.up);
+		pj.velocity = Vector3.ClampMagnitude (Vector3.Project (pj.velocity, transform.forward), maxZ) + Vector3.ClampMagnitude (Vector3.Project (pj.velocity, transform.right), maxSpeedX) + Vector3.Project (pj.velocity, transform.up);
 		if (this.transform.position.y < -17) {
 			canvasController.SetTrigger ("Fade");
 			SceneManager.LoadScene( "GameOver", LoadSceneMode.Single );
@@ -404,13 +389,28 @@ public class Movement : MonoBehaviour {
 	}
 
 	void Stop(){
+		StartCoroutine(WaitStop ());
+	}
+
+	IEnumerator WaitStop(){
+		yield return new WaitForSeconds (0.8f);
+		attack = false;
+		st = State.MOVE;
 
 	}
 
 
-	void OnCollisionStay(Collision coll){
+	/*void OnCollisionStay(Collision coll){
 		if (coll.collider.gameObject.layer == LayerMask.NameToLayer ("Ground")) {
 			grounded = true;
+			jumping = false;
+		}
+
+	}
+	void OnCollisionEnter(Collision coll){
+		if (coll.collider.gameObject.layer == LayerMask.NameToLayer ("Ground")) {
+			grounded = true;
+			jumping = false;
 			dudeController.SetBool ("Jump", false);
 			dudeController.SetBool ("Falling", false);
 		}
@@ -419,31 +419,27 @@ public class Movement : MonoBehaviour {
 	void OnCollisionExit(Collision coll){
 		if (coll.collider.gameObject.layer == LayerMask.NameToLayer ("Ground")) {
 			grounded = false;
+			jumping = true;
 			if (jumping) {
-				dudeController.SetBool ("Jump", true);
 			}
-			dudeController.SetBool ("Falling", true);
+		
 
-		}
-	}
-
-	/*void OnCollisionStay(Collision coll){
-		if (coll.collider.gameObject.layer == LayerMask.NameToLayer ("Ground")) {
-			angle =Vector3.Angle(new Vector3(0,1,0),coll.contacts [0].normal);
-			//if (angle <= 45) {
-				grounded = true;
-			} else {
-				grounded = false;
-			}
-		}
-	}
-
-	void OnCollisionExit(Collision coll){
-		if (coll.collider.gameObject.layer == LayerMask.NameToLayer ("Ground")) {
-			//if (angle <= 45) {
-				grounded = false;
-			//}
 		}
 	}*/
+	void OnCollisionStay(Collision coll){
+		if (coll.collider.gameObject.layer == LayerMask.NameToLayer ("Ground")) {
+			grounded = true;
+			jumping = false;
+		}
 
+	}
+	void OnCollisionExit(Collision coll){
+		if (coll.collider.gameObject.layer == LayerMask.NameToLayer ("Ground")) {
+			grounded = false;
+			if (jumping) {
+				
+			}
+
+		}
+	}
 }
